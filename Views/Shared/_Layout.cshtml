@@ -1,28 +1,153 @@
-﻿<!DOCTYPE html>
+﻿@using BlogPersonal.Extras
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BlogPersonal</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
-    <header>
-        <p class="text-red-500">Header</p>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <p class="text-"></p>
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - BlogPersonal - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/3c0f9b352f.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css" />
+    <link rel="stylesheet" href="~/css/prism.css"/>
+</head>
+<body class="bg-[var(--body-color)] flex h-screen flex-col">
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.2/"
+            }
+        }
+    </script>
+    <header class="mx-[60px]">
+        <nav class="my-[13.5px] flex items-center justify-between">
+            <a class="text-[var(--primary-color)] text-[32px] inter-extrabold" asp-action="Index" asp-controller="Home">TecnoFit</a>
+            <ul class="gap-[14px] flex flex-row items-center">
+                <li>
+                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Inicio"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Home">Inicio</a>
+                </li>
+                <li>
+                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
+                </li>
+                <li>
+                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Contacto</a>
+                </li>
+                <li>
+                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Sobre Mi</a>
+                </li>
+                @if(User.IsInRole(Roles.Admin))
+                {
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Gestionar"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Admin">Gestionar</a>
+                    </li>
+                }
+            </ul>
+            <div class="gap-[28px] flex items-center">
+                @if(!User.Identity.IsAuthenticated)
+                {
+                    <a class="border-2 inter-bold px-[20px] py-[12px] h-[48px] inter-bold rounded-[6px] flex items-center border-white text-white" asp-action="Login" asp-controller="Account">
+                        Iniciar sesión
+                    </a>
+                    <a class="border-2 border-[var(--primary-color)] h-[48px ] bg-[var(--primary-color)] px-[20px] py-[12px] inter-bold rounded-[6px] flex items-center text-white" asp-action="Register" asp-controller="Account">
+                        Registrarse
+                    </a>
+                }
+                else
+                {
+                    <button class="relative" id="buttonProfile">
+                        <i class="fa-regular fa-user text-[var(--primary-color)] text-[24px]"></i>
+                        <div class="bg-[var(--primary-color)] p-[6px] inter-bold hidden text-white">
+                            <a asp-action="Logout" asp-controller="Account">Salir</a>
+                        </div>
+                    </button>
+                }
+
+            </div>
+        </nav>
+    </header>
+    <main role="main" class="w-full flex-grow">
+        @RenderBody()
+    </main>
+    <footer class="bg-[var(--secondary-body-color)] mt-auto w-full">
+        <div class="gap-[14px] py-[34px] px-[65px] flex w-full flex-row text-white">
+            <span>@@2024</span>
+            <a>GitHub</a>
+            <a>LinkedIn</a>
+            <a>Email</a>
         </div>
     </footer>
+
+    
+    <script src="~/js/prism.js"></script>
+    <script type="module">
+        import {
+            ClassicEditor,
+            Essentials,
+            Bold,
+            Italic,
+            Font,
+            Paragraph,
+            Image,
+            ImageInsert,
+            CodeBlock,
+            ImageResizeEditing,
+            ImageResizeHandles,
+            Heading,
+            HorizontalLine,
+            Alignment,
+            AutoLink, 
+            Link
+        } from 'ckeditor5';
+
+        ClassicEditor
+    .create(document.querySelector('#editor'), {
+                plugins: [Essentials, Link, AutoLink, Bold, Italic, Font, Paragraph, Image, ImageInsert, CodeBlock, ImageResizeEditing, Alignment, ImageResizeHandles, Heading, HorizontalLine],
+        toolbar: [
+            'undo', 'redo', '|', 'bold', 'italic', '|',
+                    'heading', 'fontFamily', 'fontColor', 'link', 'fontBackgroundColor', ' | ', 'insertImage', 'codeBlock', 'horizontalLine', 'alignment'
+        ],
+        image: {
+            insert: {
+                integrations: ['upload', 'assetManager', 'url']
+            }
+        },
+        heading: {
+            options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+            ]
+        }
+    })
+    .then(editor => {
+        console.log('Editor was initialized', editor);
+    })
+    .catch(error => {
+        console.error(error.stack);
+    });
+    </script>
+    <script>
+        const buttonElement = document.getElementById("buttonProfile");
+        buttonElement.addEventListener('click',(event)=>
+        {
+            const childElement = buttonElement.children[1];
+            if(childElement.classList.contains('hidden'))
+            {
+                childElement.classList.remove('hidden');
+                childElement.classList.add('absolute');
+            }
+            else
+            {
+                childElement.classList.remove('absolute');
+                childElement.classList.add('hidden');
+            }
+        })
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

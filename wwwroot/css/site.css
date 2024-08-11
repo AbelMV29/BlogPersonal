@@ -1,3 +1,87 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+    font-family: "Inter", sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing: content-box;
+    
+}
+
+input:focus{
+    outline:none;
+}
+
+.CdkContent a
+{
+    color:var(--primary-color) !important;
+    transition-duration:.5s;
+}
+
+.CdkContent a:hover
+{
+    color: var(--secondary-color) !important;
+}
+
+.ck-content h1 {
+    font-size: 2em !important;
+}
+
+.ck-content h2 {
+    font-size: 1.75em !important;
+}
+
+.ck-content h3 {
+    font-size: 1.5em !important;
+}
+
+h1 {
+    font-size: 3em !important;
+}
+
+h2 {
+    font-size: 1.75em !important;
+}
+
+h3 {
+    font-size: 1.5em !important;
+}
+
+:root {
+    --body-color: #1B1B1B;
+    --primary-color: #FF6F61;
+    --secondary-color: #FFA07A;
+    --link-color: #CCCCCC;
+    --secondary-body-color: #2C2C2C;
+}
+
+.inter-medium {
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+.inter-semibold {
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+.inter-bold {
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+}
+.inter-extrabold {
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+.active
+{
+    color:var(--primary-color) !important;
+}
+
+.ck-content pre {
+    background-color: #b2b2b2 !important;
+}

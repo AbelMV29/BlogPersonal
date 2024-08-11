@@ -1,0 +1,19 @@
+﻿@using BlogPersonal.Models.Admin
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Publicar";
+}
+@model CreatePostViewModel
+<div class="mx-[60px] gap-[30px] flex flex-col 2xl:mx-[300px]">
+    <h1 class="text-[32px] inter-extrabold text-white">Publicar articulo</h1>
+    <form class="gap-[15px] w-[50%] flex flex-col" enctype="multipart/form-data" method="post" asp-action="PublishPost">
+        <input class="text-[16px] px-[10px] py-[14px] rounded-[6px] bg-white p-2" type="file" asp-for="ImagePreview" />
+        <input class ="text-[16px] px-[10px] py-[14px] border-2 bg-white rounded-[6px] w-full" placeholder="Titulo del articulo" type="text" asp-for="Title" />
+        <input class="text-[16px] px-[10px] py-[14px] border-2 rounded-[6px] w-full bg-white" placeholder="Breve descripción" type="text" asp-for="ShortDescription" />
+        <textarea asp-for="Body" id="editor"></textarea>
+        <select class="text-[16px] px-[10px] py-[14px] border-2 rounded-[6px] w-full bg-white" asp-items="ViewBag.Categories" asp-for="Category">Seleccione la categoria</select>
+        <button class="text-[16px] bg-[var(--primary-color)] px-[45px] py-[9.5px] inter-bold transition-[1s] self-start rounded-md text-white hover:bg-[var(--secondary-color)]" type="submit">Publicar</button>
+    </form>
+</div>

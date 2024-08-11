@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Gestión";
+    ViewData["Gestionar"] = "active";
+}
+<link href="~/css/prism.css" rel="stylesheet">
+<div class="mx-[60px] gap-[30px] flex flex-col 2xl:mx-[300px]">
+    <h1 class="text-[32px] inter-extrabold text-white">Bienvenido Administrador</h1>
+    <div class="gap-[30px] flex flex-wrap">
+        <a asp-action="ListUser" class="bg-[var(--secondary-body-color)] p-[24px] transition-[1s] rounded-[6px] hover:opacity-95">
+            <p class="text-[20px] inter-bold transition-[1s] text-white hover:text-[var(--primary-color)]">Ver usuarios   <i class="fa-solid fa-user"></i></p>
+        </a>
+        <a asp-action="PublishPost" class="bg-[var(--secondary-body-color)] p-[24px] transition-[1s] rounded-[6px] hover:opacity-95">
+            <p class="text-[20px] inter-bold transition-[1s] text-white hover:text-[var(--primary-color)]">Publicar un articulo  <i class="fa-solid fa-plus"></i></p>
+        </a>
+        <a asp-action="ListUser" class="bg-[var(--secondary-body-color)] p-[24px] transition-[1s] rounded-[6px] hover:opacity-95">
+        <p class="text-[20px] inter-bold transition-[1s] text-white hover:text-[var(--primary-color)]">Ver articulos  <i class="fa-regular fa-newspaper"></i></p>
+        </a>
+    </div>
+</div>
+
+<script src="~/js/prism.js"></script>

@@ -1,0 +1,27 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+@model LoginViewModel
+<div class="h-[81vh] flex h-full w-full items-center justify-center">
+    <form class="p-[50px] gap-[40px] w-[440px] flex flex-col items-center" method="post" asp-action="Login" asp-controller="Account" asp-route-returnUrl="@ViewData["returnUrl"]">
+        <h4 class="text-[36px] inter-bold text-center text-white">Inicar sesión</h4>
+        <input asp-for="Email" type="email" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Correo eléctronico" />
+        <input asp-for="Password" type="password" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Contraseña" />
+        <button type="submit" class="text-[16px] bg-[var(--primary-color)] px-[45px] py-[9.5px] inter-bold transition-[1s] rounded-md text-white hover:bg-[var(--secondary-color)]">Ingresar</button>
+        <span class="inter-medium text-white">¿Usuario nuevo? <a class="text-[var(--primary-color)]" asp-action="Register" asp-controller="Account">Regístrate</a></span>
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div asp-validation-summary=All
+                 class="bg-[var(--primary-color)] rounded-[6px] p-[10px] text-white">
+            </div>
+        }
+
+    </form>
+</div>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"></partial>
+}

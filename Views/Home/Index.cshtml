@@ -1,8 +1,75 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using BlogPersonal.Entities
+@using BlogPersonal.Models.View
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["Inicio"] = "active";
 }
+@model List<ShortPostViewModel>
+<div class="mx-[60px] flex flex-col 2xl:mx-[300px]">
+    <div class="py-[30px] gap-[30px] flex w-full flex-row content-between items-center">
+        <div class="w-[50%] flex flex-col">
+            <h1 class="text-[56px] inter-extrabold text-white">Bienvenido a TecnoFit</h1>
+            <h3 class="text-[24px] text-[var(--primary-color)] inter-bold">Explora contenido en Tecnología y Entrenamiento!</h3>
+            <p class="text-[16px] inter-medium text-white">
+                ¡Hola! Breve descripción mia. He creado este espacio para compartir mis conocimientos y experiencias en estas dos áreas fascinantes. Ya seas un entusiasta de la programación o alguien buscando mejorar su rutina de ejercicios, ¡este blog es para ti!
+            </p>
+        </div>
+        <img class="h-[380px] w-[50%] object-cover object-center" src="https://images.unsplash.com/photo-1557754897-ca12c5049d83?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+    </div>
+    <div class="h-[1px] w-full bg-white"></div>
+    <div class="my-[30px] gap-[30px] flex flex-col">
+        <h3 class="inter-bold text-[32px] text-white">Artículos y publicaciones recientes</h3>
+        <div class="relative flex items-center">
+            <button id="scrollLeft" class="z-10 bg-[var(--primary-color)] ml-[-30px] fa-solid fa-arrow-left absolute left-0 rounded-full px-4 py-2 text-white focus:outline-none active:opacity-75"></button>
+            <div class="no-scrollbar gap-[15px] flex flex-row items-center overflow-x-scroll">
+                @foreach(var item in Model)
+                {
+                    <div class="min-w-[400px] max-w-[400px] flex flex-col">
+                        <img src="@item.PreviewImage"/>
+                        <div class="gap-[15px] bg-[var(--secondary-body-color)] p-[15px] rounded-b-[6px] flex flex-col">
+                            <a asp-action="Post" asp-route-id="@item.Id" class="inter-bold text-[28px] text-[var(--primary-color)]">@item.Title</a>
+                            <p class="inter-medium text-[14px] text-white">@item.ShortDescription hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc </p>
+                            <div class="flex w-full flex-row justify-between">
+                                <a asp-action="Post" asp-route-id="@item.Id" class="text-[var(--primary-color)] inter-bold">Ver</a>
+                                <p class="text-[var(--link-color)] inter-bold">@item.PublishDate</p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
 
-<div class="text-center">
-    <h1 class="display-4 tex">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+                }
+            </div>
+            <button id="scrollRight" class="z-10 bg-[var(--primary-color)] fa-solid fa-arrow-right absolute right-0 rounded-full px-4 py-2 text-white focus:outline-none active:opacity-75"></button>
+        </div>
+    </div>
 </div>
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+<script>
+    const scrollContainer = document.querySelector('.overflow-x-scroll');
+    const scrollLeftButton = document.getElementById('scrollLeft');
+    const scrollRightButton = document.getElementById('scrollRight');
+
+    scrollLeftButton.addEventListener('click', () => {
+        scrollContainer.scrollBy({
+            left: -500,
+            behavior: 'smooth'
+        });
+    });
+
+    scrollRightButton.addEventListener('click', () => {
+        scrollContainer.scrollBy({
+            left: 500, 
+            behavior: 'smooth'
+        });
+    });
+</script>
