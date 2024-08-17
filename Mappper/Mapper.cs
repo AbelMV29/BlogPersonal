@@ -78,10 +78,12 @@ namespace BlogPersonal.Mappper
         {
             return new CommentViewModel
             {
+                IdComment = comment.IdComment,
                 Body = comment.Body,
                 MediaUrl = comment.MediaUrl,
                 PublishDate = comment.PublishDate.ToString("dd MMM yyyy"),
-                FullName = string.Concat(comment.AppUser.FirstName, " ", comment.AppUser.LastName)
+                FullName = string.Concat(comment.AppUser.FirstName, " ", comment.AppUser.LastName),
+                IdAppUser = comment.IdAppUser
             };
         }
 

@@ -6,14 +6,67 @@
     ViewData["Title"] = "Publicar";
 }
 @model CreatePostViewModel
-<div class="mx-[60px] gap-[30px] flex flex-col 2xl:mx-[300px]">
+<div class="mx-[60px] gap-[30px] mb-12 flex flex-col 2xl:mx-[300px]">
     <h1 class="text-[32px] inter-extrabold text-white">Publicar articulo</h1>
-    <form class="gap-[15px] w-[50%] flex flex-col" enctype="multipart/form-data" method="post" asp-action="PublishPost">
+    <form class="gap-[15px] w-[70%] flex flex-col" enctype="multipart/form-data" method="post" asp-action="PublishPost">
         <input class="text-[16px] px-[10px] py-[14px] rounded-[6px] bg-white p-2" type="file" asp-for="ImagePreview" />
         <input class ="text-[16px] px-[10px] py-[14px] border-2 bg-white rounded-[6px] w-full" placeholder="Titulo del articulo" type="text" asp-for="Title" />
         <input class="text-[16px] px-[10px] py-[14px] border-2 rounded-[6px] w-full bg-white" placeholder="Breve descripción" type="text" asp-for="ShortDescription" />
-        <textarea asp-for="Body" id="editor"></textarea>
+        <textarea asp-for="Body" id="editor" ></textarea>
         <select class="text-[16px] px-[10px] py-[14px] border-2 rounded-[6px] w-full bg-white" asp-items="ViewBag.Categories" asp-for="Category">Seleccione la categoria</select>
         <button class="text-[16px] bg-[var(--primary-color)] px-[45px] py-[9.5px] inter-bold transition-[1s] self-start rounded-md text-white hover:bg-[var(--secondary-color)]" type="submit">Publicar</button>
     </form>
+    <h3 class="text-white">Subir imagenes para obtener su url</h3>
+    <div class="gap-[30px] flex flex-col">
+        <form class="gap-[10px] flex flex-col items-start text-white" id="subirImagenForm">
+            <input name="imagen" class="w-full bg-white p-2 text-black" type="file" accept="image/*" />
+            <button type="submit" class="bg-[var(--primary-color)] rounded-[6px] p-2">Obtener url</button>
+        </form>
+        <span id="urlImagen" class="bg-white p-2 text-black">Aca aparecera la url una vez subida</span>
+    </div>
+    
 </div>
+@section Scripts
+{
+    <script type="text/javascript">
+        $(() => {
+            const formElement = $("#subirImagenForm")
+
+            formElement.submit((event) => { 
+                console.log("hola");
+                event.preventDefault();
+                event.stopPropagation();
+                let mediaFile = formElement[0].imagen.files[0];
+                if (mediaFile && mediaFile.type.startsWith("image/"))
+                {
+                    let dataForm = new FormData(formElement[0]);
+                    $.ajax(
+                        {
+                            method: 'POST',
+                            url: '/admin/uploadPhoto',
+                            data: dataForm,
+                            contentType:false,
+                            processData:false,
+                            beforeSend: () => {
+                                toastr.info("Subiendo imagen..");
+                            },
+                            success: (data) => {
+                                $("#urlImagen").text(data);
+                                toastr.success("imagen subida con exito!");
+                            },
+                            error: (error) => {
+                                toastr.error(error.status);
+                            }
+                        }
+                    )
+                }
+                else
+                {
+                    console.log(formElement[0].imagen);
+                    toastr.error("Debe subir un archivo");
+                }
+                
+            })
+        })
+    </script>
+}

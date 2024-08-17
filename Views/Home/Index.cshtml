@@ -5,16 +5,16 @@
     ViewData["Inicio"] = "active";
 }
 @model List<ShortPostViewModel>
-<div class="mx-[60px] flex flex-col 2xl:mx-[300px]">
-    <div class="py-[30px] gap-[30px] flex w-full flex-row content-between items-center">
-        <div class="w-[50%] flex flex-col">
+<div class="mx-4 flex flex-col lg:mx-[60px] 2xl:mx-[300px]">
+    <div class="py-[30px] gap-[30px] flex w-full flex-row flex-wrap content-between items-center lg:flex-nowrap">
+        <div class="gap-[10px] flex w-full flex-col text-center lg:text-start lg:w-[50%]">
             <h1 class="text-[56px] inter-extrabold text-white">Bienvenido a TecnoFit</h1>
             <h3 class="text-[24px] text-[var(--primary-color)] inter-bold">Explora contenido en Tecnología y Entrenamiento!</h3>
             <p class="text-[16px] inter-medium text-white">
                 ¡Hola! Breve descripción mia. He creado este espacio para compartir mis conocimientos y experiencias en estas dos áreas fascinantes. Ya seas un entusiasta de la programación o alguien buscando mejorar su rutina de ejercicios, ¡este blog es para ti!
             </p>
         </div>
-        <img class="h-[380px] w-[50%] object-cover object-center" src="https://images.unsplash.com/photo-1557754897-ca12c5049d83?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+        <img class="h-[280px] w-full object-cover object-center lg:h-[380px] lg:w-[50%]" src="https://images.unsplash.com/photo-1557754897-ca12c5049d83?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
     </div>
     <div class="h-[1px] w-full bg-white"></div>
     <div class="my-[30px] gap-[30px] flex flex-col">
@@ -24,11 +24,11 @@
             <div class="no-scrollbar gap-[15px] flex flex-row items-center overflow-x-scroll">
                 @foreach(var item in Model)
                 {
-                    <div class="min-w-[400px] max-w-[400px] flex flex-col">
-                        <img src="@item.PreviewImage"/>
+                    <div class="min-w-[300px] flex flex-col lg:min-w-[400px]">
+                        <img src="@item.PreviewImage" class="object-cover object-center" />
                         <div class="gap-[15px] bg-[var(--secondary-body-color)] p-[15px] rounded-b-[6px] flex flex-col">
                             <a asp-action="Post" asp-route-id="@item.Id" class="inter-bold text-[28px] text-[var(--primary-color)]">@item.Title</a>
-                            <p class="inter-medium text-[14px] text-white">@item.ShortDescription hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc hda jkdh ajklshdjaklsjd lasjdiq owjioc </p>
+                            <p class="inter-medium text-[14px] text-white">@item.ShortDescription </p>
                             <div class="flex w-full flex-row justify-between">
                                 <a asp-action="Post" asp-route-id="@item.Id" class="text-[var(--primary-color)] inter-bold">Ver</a>
                                 <p class="text-[var(--link-color)] inter-bold">@item.PublishDate</p>

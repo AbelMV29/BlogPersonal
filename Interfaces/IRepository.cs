@@ -3,7 +3,7 @@
     public interface IRepository<T>
     {
         public Task AddAsync(T entity);
-        public Task DeleteAsync(int id);
+        public Task DeleteAsync(T entity);
         public IQueryable<T> GetAll();
         public Task<T?> GetByIdAsync(int id);
         public Task EditAsync(T entity);

@@ -1,33 +1,36 @@
 ﻿@using BlogPersonal.Models.View
+@using System.Security.Claims
 @model PostViewModel
 @{
     ViewData["Title"] = Model.Title;
 }
 
 <div class="mx-[60px] my-[50px] gap-[30px] flex flex-col 2xl:mx-[300px]">
-    <img class="h-[150px] blur-[1px] w-full" src="@Model.PreviewImage"/>
-    <div class="inter-bold flex flex-row items-center justify-between">
-        <h1 class="text-[32px] text-[var(--primary-color)]">@Model.Title</h1>
-        <span class="text-[var(--link-color)] text-[18px]">@Model.CategoryName - @Model.PublishDate</span>
+    <div class="relative overflow-hidden py-4">
+        <img class="blur-[4px] absolute inset-0 h-full w-full object-cover object-center" src="@Model.PreviewImage" />
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-950 to-gray-500 opacity-90"></div>
+        <div class="inter-bold relative flex flex-row items-center justify-between p-4">
+            <h1 class="text-[32px] text-[var(--primary-color)]">@Model.Title</h1>
+            <span class="text-[18px] text-[var(--link-color)] flex-shrink-0">@Model.CategoryName - @Model.PublishDate</span>
+        </div>
     </div>
-    
+
     <p class="text-white">@Model.ShortDescription</p>
     <div class="h-[1px] w-full bg-white"></div>
     <div class="CdkContent transition-[1s] w-full text-white">
         @Html.Raw(Model.Body)
     </div>
-    <h3 class="inter-bold text-[32px] text-white">Seccion de Comentarios</h3>
-    <div class="bg-[var(--secondary-body-color)] gap-[15px] p-[30px] flex flex-col">
-        @if(User.Identity.IsAuthenticated)
+    <h3 class="inter-bold text-[32px] text-white">Sección de Comentarios</h3>
+    <div class="bg-[var(--secondary-body-color)] gap-[15px] p-[30px] flex flex-col" id="containerP">
+        @if (User.Identity.IsAuthenticated)
         {
             <form method="post" enctype="multipart/form-data" class="gap-[15px] flex flex-col" id="commentForm">
-                <input type="hidden" name="IdPost" value="@Model.Id"/>
+                <input type="hidden" name="IdPost" value="@Model.Id" />
                 <textarea placeholder="Escribe un comentario" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full resize-none border-white text-gray-400" name="Body" rows="5"></textarea>
                 <div class="flex flex-row justify-between">
                     <input accept="image/*" class="w-[50%] text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] border-white text-gray-400" type="file" name="MediaUrl" />
                     <button class="text-[16px] bg-[var(--primary-color)] px-[35px] py-[6.5px] inter-bold transition-[1s] rounded-md text-white hover:bg-[var(--secondary-color)]" type="submit">Comentar</button>
                 </div>
-                
             </form>
         }
         else
@@ -36,84 +39,157 @@
         }
         @if (Model.Comments is null || Model.Comments.Count == 0)
         {
-            <span class="text-red-500">No hay comentarios</span>
+            <span class="text-red-500" id="noContent">No hay comentarios</span>
         }
         else
         {
             <div id="contentComments" class="gap-[15px] flex flex-col">
-                @foreach(var item in Model.Comments)
-            {
-                <div class="gap-[15px] flex flex-col">
-                    <div class="flex flex-row justify-between">
-                        <h4 class="text-[var(--primary-color)] inter-bold">@item.FullName</h4>
-                        <p class="text-[var(--link-color)] inter-bold">@item.PublishDate</p>
-                    </div>
-                    <p class="text-white">@item.Body</p>
-                    @if(item.MediaUrl is not null)
-                    {
+                @foreach (var item in Model.Comments)
+                {
+                    <div class="gap-[15px] flex flex-col" id="comment-@item.IdComment">
+                        <div class="flex flex-row justify-between">
+                            <h4 class="text-[var(--primary-color)] inter-bold">@item.FullName</h4>
+                            <div class="gap-[10px] flex flex-row">
+                                <p class="text-[var(--link-color)] inter-bold">@item.PublishDate</p>
+                                @if (User.Identity.IsAuthenticated && int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == item.IdAppUser)
+                                {
+                                    <button class="p-[5px] bg-[var(--primary-color)] rounded-[6px] delete-comment-btn text-white" data-comment-id="@item.IdComment">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <p class="text-white">@item.Body</p>
+                        @if (item.MediaUrl is not null)
+                        {
                             <img src="@item.MediaUrl" class="w-[50%] rounded-[6px]" />
-                    }
-                    <hr class="opacity-30"/>
-                </div>
-            }
+                        }
+                        <hr class="opacity-30" />
+                    </div>
+                }
             </div>
-            
         }
     </div>
 </div>
-<script>
-    const commentForm = document.getElementById('commentForm');
-    const commentContainer = document.getElementById('contentComments');
-    commentForm.addEventListener('submit',(event)=>
-    {
-        event.preventDefault();
-        const formData = new FormData(commentForm);
-        fetch("/comment",
-        {
-            method:'Post',
-            body:formData,
-        })
-        .then(response=>response.json())
-        .then(item=>
-            {
-                console.log(item)
-                const commentDiv = document.createElement('div');
-                commentDiv.className = 'gap-[15px] flex flex-col';
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            const commentForm = document.getElementById('commentForm');
+            let commentContainer = document.getElementById('contentComments');
 
-                // Crear la fila superior
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'flex flex-row justify-between';
+            // Handling comment submission
+            commentForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                if (commentForm.Body.value === "" || commentForm == null) {
+                    toastr.error("El comentario debe contener texto obligatoriamente");
+                } else {
+                    const mediaFile = commentForm.MediaUrl.files[0];
+                    if (mediaFile && !mediaFile.type.startsWith("image/")) {
+                        toastr.error("El archivo debe ser del tipo imagen");
+                        return;
+                    }
 
-                // Crear y agregar el nombre completo
-                const nameElement = document.createElement('h4');
-                nameElement.className = 'text-[var(--primary-color)] inter-bold';
-                nameElement.textContent = item.fullName; // No necesita escapado
+                    const formData = new FormData(commentForm);
+                    fetch("/comment", {
+                        method: 'Post',
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(item => {
+                            if (!commentContainer) {
+                                commentContainer = document.createElement('div');
+                                commentContainer.id = 'contentComments';
+                                commentContainer.className = 'gap-[15px] flex flex-col';
+                                document.getElementById("noContent").remove();
+                                document.getElementById("containerP").appendChild(commentContainer);
+                            }
+                            const commentDiv = document.createElement('div');
+                            commentDiv.className = 'gap-[15px] flex flex-col';
+                            commentDiv.id = `comment-${item.idComment}`;
 
-                // Crear y agregar la fecha de publicación
-                const dateElement = document.createElement('p');
-                dateElement.className = 'text-[var(--link-color)] inter-bold';
-                dateElement.textContent = item.publishDate; // No necesita escapado
+                            // Create top row with name and date
+                            const rowDiv = document.createElement('div');
+                            rowDiv.className = 'flex flex-row justify-between';
 
-                rowDiv.appendChild(nameElement);
-                rowDiv.appendChild(dateElement);
-                commentDiv.appendChild(rowDiv);
+                            const nameElement = document.createElement('h4');
+                            nameElement.className = 'text-[var(--primary-color)] inter-bold';
+                            nameElement.textContent = item.fullName;
 
-                const bodyElement = document.createElement('p');
-                bodyElement.className = "text-white"
-                bodyElement.textContent = item.body; // Escapar HTML en el cuerpo
-                commentDiv.appendChild(bodyElement);
 
-                if (item.mediaUrl) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = item.mediaUrl;
-                    imgElement.className = 'w-[50%] rounded-[6px]';
-                    commentDiv.appendChild(imgElement);
+                            const dateElement = document.createElement('p');
+                            dateElement.className = 'text-[var(--link-color)] inter-bold';
+                            dateElement.textContent = item.publishDate;
+
+                            const divElement = document.createElement('div');
+                            divElement.className = "gap-[10px] flex flex-row";
+                            divElement.appendChild(dateElement);
+
+
+
+                            rowDiv.appendChild(nameElement);
+                            rowDiv.appendChild(divElement);
+                            commentDiv.appendChild(rowDiv);
+
+                            const bodyElement = document.createElement('p');
+                            bodyElement.className = "text-white";
+                            bodyElement.textContent = item.body;
+                            commentDiv.appendChild(bodyElement);
+
+                            if (item.mediaUrl) {
+                                const imgElement = document.createElement('img');
+                                imgElement.src = item.mediaUrl;
+                                imgElement.className = 'w-[50%] rounded-[6px]';
+                                commentDiv.appendChild(imgElement);
+                            }
+
+                            if (item.idAppUser === parseInt("@User.FindFirstValue(ClaimTypes.NameIdentifier)")) {
+                                const deleteButton = document.createElement('button');
+                                deleteButton.className = 'text-white p-[5px] bg-[var(--primary-color)] rounded-[6px] delete-comment-btn';
+                                deleteButton.dataset.commentId = item.idComment;
+                                deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                                divElement.appendChild(deleteButton);
+                            }
+
+                            const hrElement = document.createElement('hr');
+                            hrElement.className = "opacity-30";
+                            commentDiv.appendChild(hrElement);
+
+                            toastr.success('Comentario publicado exitosamente');
+                            commentContainer.prepend(commentDiv);
+
+                            commentForm.MediaUrl.value = '';
+                            commentForm.Body.value = '';
+                        })
+                        .catch(error => {
+                            toastr.error("Error al publicar el comentario");
+                        });
                 }
+            });
 
-            commentContainer.prepend(commentDiv);
-            }
-        );
+            // Handling comment deletion
+            document.addEventListener('click', (event) => {
+                if (event.target.closest('.delete-comment-btn')) {
+                    const deleteButton = event.target.closest('.delete-comment-btn');
+                    const commentId = deleteButton.dataset.commentId;
 
-    })
-    console.log(document.URL)
-</script>
+                    fetch(`/comment/${commentId}`, {
+                        method: 'DELETE',
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                document.getElementById(`comment-${commentId}`).remove();
+                                toastr.success('Comentario eliminado exitosamente');
+                            } else {
+                                toastr.error('Error al eliminar el comentario');
+                            }
+                        })
+                        .catch(error => {
+                            toastr.error('Error al eliminar el comentario');
+                        });
+                }
+            });
+        })
+        
+    </script>
+}

@@ -7,7 +7,7 @@ using BlogPersonal.Models.View;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -20,28 +20,39 @@ namespace BlogPersonal.Controllers
         private readonly IRepository<Post> _repositoryPost;
         private readonly IRepository<Comment> _repositoryComment;
         private readonly ICloudService _cloudService;
+        private readonly IMemoryCache _memoryCache;
 
         public HomeController(ILogger<HomeController> logger,IRepository<Post> repositoryPost,
-            IRepository<Comment> repositoryComment,ICloudService cloudService)
+            IRepository<Comment> repositoryComment,ICloudService cloudService,IMemoryCache memoryCache)
         {
             _logger = logger;
             _repositoryPost = repositoryPost;
             _repositoryComment = repositoryComment;
             _cloudService = cloudService;
+            _memoryCache = memoryCache;
         }
 
         public IActionResult Index()
         {
-            var tenPosts = _repositoryPost.GetAll().OrderByDescending(p=>p.PublishDate).Take(10).ToList();
-            var tenShortPostViewModel = tenPosts.MapListPostToListShortPostViewModel();
+            string cacheKey = "indexHome";
+            if(!_memoryCache.TryGetValue(cacheKey,out List<ShortPostViewModel> tenShortPostViewModel))
+            {
+                var tenPosts = _repositoryPost.GetAll().OrderByDescending(p => p.PublishDate).Take(10).ToList();
+                tenShortPostViewModel = tenPosts.MapListPostToListShortPostViewModel();
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromHours(10));
+
+                _memoryCache.Set(cacheKey, tenShortPostViewModel,cacheEntryOptions);
+            }
+            
             return View(tenShortPostViewModel);
         }
         [HttpGet("posts")]
         public async Task<IActionResult> Posts()
         {
-            var posts = await _repositoryPost.GetAll().OrderByDescending(p => p.PublishDate).Take(9).ToListAsync();
-            var listView = posts.MapListPostToListShortPostViewModel();
-            return View(listView);
+            _memoryCache.Remove("indexHome");
+            return View();
         }
 
         [HttpGet("postsQuery")]
@@ -71,7 +82,6 @@ namespace BlogPersonal.Controllers
             var listView = result.MapListPostToListShortPostViewModel();
 
             return new {list = listView,totalPages,currentPage = page };
-            
         }
 
         [HttpGet("post/{id}")]
@@ -86,12 +96,12 @@ namespace BlogPersonal.Controllers
             
             return View(postToShow);
         }
+
         [HttpGet("notfound")]
         public IActionResult Notfound()
         {
             return View();
         }
-
 
         [HttpPost("comment"),Authorize]
         public async Task<IActionResult> Comment([FromForm] CreateCommentViewModel model)
@@ -120,8 +130,23 @@ namespace BlogPersonal.Controllers
             var commentAdded = _repositoryComment.GetAll().Include(c => c.AppUser).First(c=>c.IdComment == commentToAdd.IdComment);
 
             var commentResult = commentAdded.MapCommentToCommentViewModel();
+            
             return Ok(commentResult);
         }
+
+        [HttpDelete("comment/{idComment}"),Authorize]
+        public async Task<IActionResult> Comment(int idComment)
+        {
+            var comment = await _repositoryComment.GetByIdAsync(idComment);
+            if(comment is null) return BadRequest();
+            if(comment.IdAppUser != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                return BadRequest();
+            await _repositoryComment.DeleteAsync(comment);
+            await _repositoryComment.SaveChangesAsync();
+            return Ok();
+        }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

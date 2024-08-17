@@ -39,6 +39,7 @@ namespace BlogPersonal.Controllers
         [HttpPost("login"),AllowAnonymous, ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model,[FromQuery]string returnUrl = "") 
         {
+            ViewData["returnUrl"] = returnUrl;
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Home");

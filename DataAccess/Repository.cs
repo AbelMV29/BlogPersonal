@@ -19,10 +19,9 @@ namespace BlogPersonal.DataAccess
             await Entities.AddAsync(entity);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            T entidadABorrar = await GetByIdAsync(id);
-            Entities.Remove(entidadABorrar);
+            Entities.Remove(entity);
         }
 
         public async Task<T?> GetByIdAsync(int id)

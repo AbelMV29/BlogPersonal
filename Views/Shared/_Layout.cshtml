@@ -14,6 +14,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css" />
     <link rel="stylesheet" href="~/css/prism.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    
 </head>
 <body class="bg-[var(--body-color)] flex h-screen flex-col">
     <script type="importmap">
@@ -24,51 +26,98 @@
             }
         }
     </script>
-    <header class="mx-[60px]">
-        <nav class="my-[13.5px] flex items-center justify-between">
-            <a class="text-[var(--primary-color)] text-[32px] inter-extrabold" asp-action="Index" asp-controller="Home">TecnoFit</a>
-            <ul class="gap-[14px] flex flex-row items-center">
-                <li>
-                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Inicio"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Home">Inicio</a>
-                </li>
-                <li>
-                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
-                </li>
-                <li>
-                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Contacto</a>
-                </li>
-                <li>
-                    <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Sobre Mi</a>
-                </li>
-                @if(User.IsInRole(Roles.Admin))
-                {
+    
+    <header class="mx-4 lg:mx-[60px]">
+        <div class="flex flex-col">
+            <nav class="my-[13.5px] flex items-center justify-between">
+                <a class="text-[var(--primary-color)] text-[32px] inter-extrabold" asp-action="Index" asp-controller="Home">TecnoFit</a>
+                <ul class="gap-[14px] hidden flex-row items-center lg:flex">
                     <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Gestionar"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Admin">Gestionar</a>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Inicio"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Home">Inicio</a>
                     </li>
-                }
-            </ul>
-            <div class="gap-[28px] flex items-center">
-                @if(!User.Identity.IsAuthenticated)
-                {
-                    <a class="border-2 inter-bold px-[20px] py-[12px] h-[48px] inter-bold rounded-[6px] flex items-center border-white text-white" asp-action="Login" asp-controller="Account">
-                        Iniciar sesión
-                    </a>
-                    <a class="border-2 border-[var(--primary-color)] h-[48px ] bg-[var(--primary-color)] px-[20px] py-[12px] inter-bold rounded-[6px] flex items-center text-white" asp-action="Register" asp-controller="Account">
-                        Registrarse
-                    </a>
-                }
-                else
-                {
-                    <button class="relative" id="buttonProfile">
-                        <i class="fa-regular fa-user text-[var(--primary-color)] text-[24px]"></i>
-                        <div class="bg-[var(--primary-color)] p-[6px] inter-bold hidden text-white">
-                            <a asp-action="Logout" asp-controller="Account">Salir</a>
-                        </div>
-                    </button>
-                }
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
+                    </li>
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Contacto</a>
+                    </li>
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Sobre Mi</a>
+                    </li>
+                    @if (User.IsInRole(Roles.Admin))
+                    {
+                        <li>
+                            <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Gestionar"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Admin">Gestionar</a>
+                        </li>
+                    }
+                </ul>
+                <div class="gap-[28px] hidden items-center lg:flex">
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a class="border-2 inter-bold px-[20px] py-[12px] h-[48px] inter-bold rounded-[6px] flex items-center border-white text-white" asp-action="Login" asp-controller="Account">
+                            Iniciar sesión
+                        </a>
+                        <a class="border-2 border-[var(--primary-color)] h-[48px ] bg-[var(--primary-color)] px-[20px] py-[12px] inter-bold rounded-[6px] flex items-center text-white" asp-action="Register" asp-controller="Account">
+                            Registrarse
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="relative" id="buttonProfile">
+                            <i class="fa-regular fa-user text-[var(--primary-color)] text-[24px]"></i>
+                            <div class="bg-[var(--primary-color)] p-[6px] inter-bold hidden text-white">
+                                <a asp-action="Logout" asp-controller="Account">Salir</a>
+                            </div>
+                        </button>
+                    }
 
+                </div>
+                <button class="inactive lg:hidden" id="buttonMobileMenu">
+                    <i class="fa-solid fa-bars text-[var(--primary-color)] text-[30px] mr-1"></i>
+                </button>
+                
+            </nav>
+            <div role="navigation" class="hidden flex-col" id="navbarMobile">
+                <ul class="gap-[14px] flex w-full flex-col items-center lg:hidden">
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Inicio"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Home">Inicio</a>
+                    </li>
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
+                    </li>
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Contacto</a>
+                    </li>
+                    <li>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Sobre Mi</a>
+                    </li>
+                    @if (User.IsInRole(Roles.Admin))
+                    {
+                        <li>
+                            <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Gestionar"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Admin">Gestionar</a>
+                        </li>
+                    }
+                </ul>
+                <div class="gap-[28px] flex w-full flex-row justify-center lg:hidden">
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a class="border-2 inter-bold px-[15px] py-[6px] h-[38px] inter-bold rounded-[6px] flex items-center border-white text-white" asp-action="Login" asp-controller="Account">
+                            Iniciar sesión
+                        </a>
+                        <a class="border-2 border-[var(--primary-color)] h-[38px] bg-[var(--primary-color)] px-[15px] py-[6px] inter-bold rounded-[6px] flex items-center text-white" asp-action="Register" asp-controller="Account">
+                            Registrarse
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="text-[var(--primary-color)] inter-bold" asp-action="Logout" asp-controller="Account">Salir de la cuenta</a>
+                    }
+
+                </div>
             </div>
-        </nav>
+            
+        </div>
+        
     </header>
     <main role="main" class="w-full flex-grow">
         @RenderBody()
@@ -81,7 +130,28 @@
             <a>Email</a>
         </div>
     </footer>
-
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "2000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    </script>
+    <partial name="_Notification" />
     
     <script src="~/js/prism.js"></script>
     <script type="module">
@@ -101,15 +171,16 @@
             HorizontalLine,
             Alignment,
             AutoLink, 
-            Link
+            Link,
+            List
         } from 'ckeditor5';
 
         ClassicEditor
     .create(document.querySelector('#editor'), {
-                plugins: [Essentials, Link, AutoLink, Bold, Italic, Font, Paragraph, Image, ImageInsert, CodeBlock, ImageResizeEditing, Alignment, ImageResizeHandles, Heading, HorizontalLine],
+                plugins: [List,Essentials, Link, AutoLink, Bold, Italic, Font, Paragraph, Image, ImageInsert, CodeBlock, ImageResizeEditing, Alignment, ImageResizeHandles, Heading, HorizontalLine],
         toolbar: [
             'undo', 'redo', '|', 'bold', 'italic', '|',
-                    'heading', 'fontFamily', 'fontColor', 'link', 'fontBackgroundColor', ' | ', 'insertImage', 'codeBlock', 'horizontalLine', 'alignment'
+                    'heading', 'fontFamily', 'fontColor', 'link', 'fontBackgroundColor', ' | ', 'insertImage', 'codeBlock','|', 'horizontalLine', 'alignment','bulletedList','numberedList'
         ],
         image: {
             insert: {
@@ -133,24 +204,45 @@
     </script>
     <script>
         const buttonElement = document.getElementById("buttonProfile");
-        buttonElement.addEventListener('click',(event)=>
-        {
-            const childElement = buttonElement.children[1];
-            if(childElement.classList.contains('hidden'))
-            {
-                childElement.classList.remove('hidden');
-                childElement.classList.add('absolute');
-            }
-            else
-            {
-                childElement.classList.remove('absolute');
-                childElement.classList.add('hidden');
-            }
+        if (buttonElement) {
+            buttonElement.addEventListener('click', (event) => {
+                const childElement = buttonElement.children[1];
+                if (childElement.classList.contains('hidden')) {
+                    childElement.classList.remove('hidden');
+                    childElement.classList.add('absolute');
+                }
+                else {
+                    childElement.classList.remove('absolute');
+                    childElement.classList.add('hidden');
+                }
+            })
+        }
+       
+
+
+        $(function () {
+            const menuButton = $("#buttonMobileMenu")
+            menuButton.click(() => {
+                if (menuButton.hasClass("inactive")) { 
+                    menuButton.removeClass("inactive");
+                    menuButton.addClass("active");
+                    $("#navbarMobile").removeClass("hidden").addClass("flex").addClass("gap-[15px]");
+                    $("#navbarMobile").slideDown();
+                }
+                else
+                {
+                    menuButton.removeClass("active");
+                    menuButton.addClass("inactive")
+                    $("#navbarMobile").slideUp();
+                }
+            })
         })
     </script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+    
 </body>
 </html>

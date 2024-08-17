@@ -3,10 +3,13 @@ using BlogPersonal.Extras;
 using BlogPersonal.Interfaces;
 using BlogPersonal.Mappper;
 using BlogPersonal.Models.Admin;
+using BlogPersonal.Models.View;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BlogPersonal.Controllers
 {
@@ -18,14 +21,16 @@ namespace BlogPersonal.Controllers
         private readonly IRepository<Post> _repositoryPost;
         private readonly ICloudService _cloudService;
         private readonly IRepository<Category> _repositoryCategory;
+        private readonly IMemoryCache _memoryCache;
 
         public AdminController(IRepository<AppUser> repositoryAppUser,IRepository<Post> repositoryPost,
-            ICloudService cloudService, IRepository<Category> repositoryCategory)
+            ICloudService cloudService, IRepository<Category> repositoryCategory,IMemoryCache memoryCache)
         {
             _repositoryAppUser = repositoryAppUser;
             _repositoryPost = repositoryPost;
             _cloudService = cloudService;
             _repositoryCategory = repositoryCategory;
+            _memoryCache = memoryCache;
         }
         public IActionResult Index()
         {
@@ -39,22 +44,29 @@ namespace BlogPersonal.Controllers
             return View(users);
         }
 
+        [HttpGet("post"),ResponseCache(Duration =21600,Location =ResponseCacheLocation.Client)]
+        public async Task<IActionResult> ListPost()
+        {
+            var posts = await _repositoryPost.GetAll().OrderByDescending(p => p.PublishDate).ToListAsync();
+            var postsView = posts.MapListPostToListShortPostViewModel();
+            return View(postsView);
+        }
+
+
         [HttpGet("create/post")]
         public async Task<IActionResult> PublishPost()
         {
             var categories = await _repositoryCategory.GetAll().ToListAsync();
-            ViewBag.Categories = new List<SelectListItem>()
-            {   new SelectListItem()
+            var categorieslist = new List<SelectListItem>();
+            foreach(var item in categories)
+            {
+                categorieslist.Add(new SelectListItem
                 {
-                    Text = categories[0].Name,
-                    Value = categories[0].Name
-                },
-                new SelectListItem
-                {
-                    Text = categories[1].Name,
-                    Value = categories[1].Name
-                }
-            } as List<SelectListItem>;
+                    Text = item.Name,
+                    Value = item.Name
+                });
+            }
+            ViewBag.Categories = categorieslist;
             return View();
         }
 
@@ -79,8 +91,40 @@ namespace BlogPersonal.Controllers
 
             await _repositoryPost.AddAsync(postToCreate);
             await _repositoryPost.SaveChangesAsync();
-
+            var url = Url.Action("PublishPost","Admin");
+            
+            TempData["success"] = "Publicacion exitosa!";
+            _memoryCache.Remove("indexHome");
             return RedirectToAction("Index");
         }
+
+        [HttpPost("uploadPhoto")]
+        public async Task<IActionResult> UploadPhoto([FromForm] IFormFile imagen)
+        {
+            if(imagen is not null && imagen.Length >0)
+            {
+                var result = await _cloudService.UploadMedia(imagen);
+                return Ok(result);
+            }
+            return StatusCode(400);
+        }
+
+        //DELETE
+        [HttpGet("delete/post")]
+        public async Task<IActionResult> DeletePost(int idPost)
+        {
+            var postToDelete = await _repositoryPost.GetByIdAsync(idPost);
+            if(postToDelete is null)
+            {
+                return RedirectToAction("NotFound","Home");
+            }
+
+            await _repositoryPost.DeleteAsync(postToDelete);
+            await _repositoryPost.SaveChangesAsync();
+            TempData["success"] = "Eliminación exitosa";
+            return RedirectToAction("ListPost");
+        }
     }
+
+
 }

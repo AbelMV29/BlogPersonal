@@ -36,19 +36,18 @@
             };
 }
 @model List<ShortPostViewModel>
-<div class="mx-[60px] py-[30px] gap-[15px] flex flex-col 2xl:mx-[300px]">
+<div class="py-[30px] gap-[15px] mx-4 flex flex-col lg:mx-[60px] 2xl:mx-[300px]">
     <h2 class="inter-bold text-[60px] text-white">Publicaciones</h2>
-    <form class="gap-[20px] flex flex-row" id="formQuery">
-        <input name="name" type="text" class="text-[14px] px-[10px] ppy-[6px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] border-white text-gray-400" placeholder="Titulo.." />
+    <form class="gap-[20px] flex w-full flex-row flex-wrap" id="formQuery">
+        <input name="name" type="text" class="text-[14px] px-[10px] py-[6px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] border-white text-gray-400" placeholder="Titulo.." />
         <select name="order" class="text-[14px] px-[10px] py-[6px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] border-white text-gray-400" asp-items="itemListOrder"></select>
         <select name="category" class="text-[14px] px-[10px] py-[6px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] border-white text-gray-400" asp-items="itemListCategory"></select>
         <button type="submit" class="bg-[var(--primary-color)] p-[15px] rounded-[6px]"><i class="fa-solid fa-magnifying-glass text-white"></i></button>
     </form>
-    <div class="gap-[15px] flex flex-wrap" id="contentPosts">
+    <div class="gap-[15px] py-[10px] flex flex-wrap" id="contentPosts">
     </div>
 </div>
-<div id="pagination" class="mt-[20px] gap-[10px] flex justify-center">
-    <!-- Pagination buttons will be added here dynamically -->
+<div id="pagination" class="my-[20px] gap-[10px] flex justify-center">
 </div>
 
 <script>
@@ -92,13 +91,13 @@
                 const element = document.getElementById('contentPosts');
                 element.innerHTML = ''
                 if (data.list.length === 0) {
-                    element.innerHTML = `<p class="text-red-600">Sin resultados</p>`;
+                    element.innerHTML = `<p class="text-[var(--primary-color)] inter-bold">Sin resultados</p>`;
                 } else {
                     data.list.forEach((e) => {
-                        element.innerHTML += `<div class="min-w-[400px] flex flex-col">
-                            <img src="${e.previewImage}" />
+                        element.innerHTML += `<div class="min-w-[300px] max-w-[400px] flex flex-col lg:min-w-[400px]">
+                                <img src="${e.previewImage}" />
                             <div class="gap-[15px] bg-[var(--secondary-body-color)] p-[15px] rounded-b-[6px] flex flex-col">
-                                <a href="post/${e.id}" class="inter-bold text-[28px] text-[var(--primary-color)]"> ${e.title}</a>
+                                <a href="post/${e.id}" class="inter-bold text-[24px] text-[var(--primary-color)]"> ${e.title}</a>
                                 <p class="inter-medium text-[14px] text-white"> ${e.shortDescription} </p>
                                 <div class="flex w-full flex-row justify-between">
                                     <a href="/post/${e.id}" class="text-[var(--primary-color)] inter-bold">Ver</a>
