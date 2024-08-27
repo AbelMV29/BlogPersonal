@@ -5,6 +5,7 @@ using BlogPersonal.Models.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BlogPersonal.Controllers
@@ -14,11 +15,14 @@ namespace BlogPersonal.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMemoryCache _memoryCache;
 
-        public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager,
+            IMemoryCache memoryCache)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _memoryCache = memoryCache;
         }
         [AllowAnonymous,HttpGet("login")]
         public IActionResult Login([FromQuery] string returnUrl = "")
@@ -28,7 +32,7 @@ namespace BlogPersonal.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            //empty or null
+
             if(!returnUrl.IsNullOrEmpty())
             {
                 ViewData["returnUrl"] = returnUrl;
@@ -87,7 +91,6 @@ namespace BlogPersonal.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            //Validaciones lógicas
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -99,7 +102,6 @@ namespace BlogPersonal.Controllers
                 return View(model);
             }
 
-            //Creando el usuario
             var appUser = Mapper.MapRegisterViewModelToAppUser(model);
             var resultCreate = await _userManager.CreateAsync(appUser, model.Password);
 
@@ -108,13 +110,13 @@ namespace BlogPersonal.Controllers
                 ModelState.AddModelError("", "Error inesperado, intentelo más tarde");
                 return View(model);
             }
-            //Añadiendo rol
             var resultRoleAdd = await _userManager.AddToRoleAsync(appUser, Roles.User);
             if(!resultRoleAdd.Succeeded)
             {
                 ModelState.AddModelError("", "Error inesperado, envie un correo al soporte mvabel23@gmail.com");
                 return View(model);
             }
+            _memoryCache.Remove("listPost");
             return RedirectToAction("Login", "Account");
         }
 

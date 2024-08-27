@@ -41,27 +41,25 @@ namespace BlogPersonal
             builder.Services.AddScoped<IRepository<Post>,Repository<Post>>();
             builder.Services.AddScoped<IRepository<Category>,Repository<Category>>();
             builder.Services.AddScoped<IRepository<Comment>, Repository<Comment>>();
+            builder.Services.AddScoped<IEmailSendService, SendGridService>();
 
             builder.Services.AddAuthorization(configure =>
             {
                 configure.AddPolicy(Roles.Admin, policyBulder => policyBulder.RequireRole(Roles.Admin));
                 configure.AddPolicy(Roles.User, policyBulder => policyBulder.RequireRole(Roles.User));
             });
-            //builder.Services.AddOutputCache(config=>
-            //{
-            //    config.addb
-            //});
 
             builder.Services.AddMemoryCache();
 
-            // Configurar JWT settings.
             var cloudSettings = new CloudinarySettings();
-            //Obtiene la configuracion almacenada en appSettings.json de la key "JwtSettings":
             builder.Configuration.Bind("CloudinarySettings", cloudSettings);
             builder.Services.AddSingleton(cloudSettings);
 
+            var sendGridConfiguration = new SendGridConfiguration();
+            builder.Configuration.Bind("SendGridConfiguration", sendGridConfiguration);
+            builder.Services.AddSingleton(sendGridConfiguration);
+
             var app = builder.Build();
-            
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -69,10 +67,10 @@ namespace BlogPersonal
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
             await AddRoles(app);
             await InitAdminUser(app);
             await AddCategories(app);
-            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

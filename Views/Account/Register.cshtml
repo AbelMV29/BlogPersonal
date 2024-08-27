@@ -6,19 +6,46 @@
 }
 @model RegisterViewModel
 <div class="flex h-full w-full flex-row justify-center">
-    <form class="p-[50px] px-[12.5%] gap-[40px] flex h-full flex-col items-center" asp-action="Register" asp-controller="Account" method="post">
-        <h4 class="text-[36px] inter-bold text-center text-white">Registrarse</h4>
+    <form class="p-[50px] gap-[25px] flex h-full w-full flex-col items-center lg:w-[50%]" asp-action="Register" asp-controller="Account" method="post">
+        <div class="gap-[15px] flex flex-col">
+            <h4 class="text-[36px] inter-bold text-center text-white">Registrarse</h4>
+            <p class="inter-bold text-white">Campos obligatorios (<span class="text-[var(--primary-color)]">*</span>)</p>
+        </div>
         <div class="gap-[24px] flex w-full flex-row flex-wrap sm:flex-nowrap">
-            <input asp-for="FirstName" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Nombre" type="text" />
-            <input asp-for="LastName" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Apellido" type="text" />
+            <div class="gap-[10px] flex w-full flex-col text-white">
+                <label asp-for="FirstName">Nombre <span class="text-[var(--primary-color)]">*</span></label>
+                <input asp-for="FirstName" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Tu nombre" type="text" />
+                <span asp-validation-for="FirstName" class="text-[var(--primary-color)]"></span>
+            </div>
+            <div class="gap-[10px] flex w-full flex-col text-white">
+                <label asp-for="LastName">Apellido <span class="text-[var(--primary-color)]">*</span></label>
+                <input asp-for="LastName" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Tu apellido" type="text" />
+                <span asp-validation-for="LastName" class="text-[var(--primary-color)]"></span>
+            </div>
         </div>
         <div class="gap-[40px] flex w-full flex-row flex-wrap sm:flex-nowrap md:gap-[24px]">
-            <input asp-for="Email" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Correo eléctronico" />
-            <input asp-for="BirthDate" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Fecha de nacimiento" type="date" />
+            <div class="gap-[10px] flex w-full flex-col text-white">
+                <label asp-for="Email">Email <span class="text-[var(--primary-color)]">*</span></label></label>
+                <input asp-for="Email" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="example@email.com" type="email" />
+                <span asp-validation-for="Email" class="text-[var(--primary-color)]"></span>
+            </div>
+            <div class="gap-[10px] flex w-full flex-col text-white">
+                <label asp-for="BirthDate">Fecha de Nacimiento <span class="text-[var(--primary-color)]">*</span></label></label>
+                <input asp-for="BirthDate" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Fecha de nacimiento" type="date" />
+                <span asp-validation-for="BirthDate" class="text-[var(--primary-color)]"></span>
+            </div>
         </div>
         <div class="gap-[40px] flex w-full flex-row flex-wrap sm:flex-nowrap md:gap-[24px]">
-            <input asp-for="Password" type="password" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Contraseña" />
-            <input asp-for="ConfirmPassword" type="password" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400" placeholder="Confirmar contraseña" />
+            <div class="gap-[10px] flex w-full flex-col text-white">
+                <label asp-for="Password">Contraseña <span class="text-[var(--primary-color)]">*</span></label></label>
+                <input asp-for="Password" type="password" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="********" />
+                <span asp-validation-for="Password" class="text-[var(--primary-color)]"></span>
+            </div>
+            <div class="gap-[10px] flex w-full flex-col text-white">
+                <label asp-for="ConfirmPassword">Confirmar contraseña <span class="text-[var(--primary-color)]">*</span></label></label>
+                <input asp-for="ConfirmPassword" type="password" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="********" />
+                <span asp-validation-for="ConfirmPassword" class="text-[var(--primary-color)]"></span>
+            </div>
         </div>
         <button type="submit" class="text-[16px] bg-[var(--primary-color)] px-[45px] py-[9.5px] inter-bold transition-[1s] rounded-md text-white hover:bg-[var(--secondary-color)]">Registrarse</button>
         <span class="inter-medium text-white">¿Ya eres un usuario? <a class="text-[var(--primary-color)]" asp-action="Login" asp-controller="Account">Iniciar sesión</a></span>
@@ -31,7 +58,6 @@
     </form>
     <img class="w-[50%] hidden object-cover object-center lg:block" src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
 </div>
-
 @section Scripts
         {
     <partial name="_ValidationScriptsPartial"></partial>

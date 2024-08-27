@@ -4,9 +4,12 @@ namespace BlogPersonal.Models.Account
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage ="El campo {0} es requerido"),EmailAddress(ErrorMessage ="Formato invalido")]
+        [Display(Name = "correo electrónico")]
+        [Required(ErrorMessage = "El {0} es requerido")]
+        [EmailAddress(ErrorMessage = "Formato inválido")]
         public string Email { get; set; }
-        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Display(Name = "contraseña")]
+        [Required(ErrorMessage = "La {0} es requerida")]
         public string Password { get; set; }
     }
 }

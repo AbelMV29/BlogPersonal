@@ -11,16 +11,16 @@
             <h1 class="text-[56px] inter-extrabold text-white">Bienvenido a TecnoFit</h1>
             <h3 class="text-[24px] text-[var(--primary-color)] inter-bold">Explora contenido en Tecnología y Entrenamiento!</h3>
             <p class="text-[16px] inter-medium text-white">
-                ¡Hola! Breve descripción mia. He creado este espacio para compartir mis conocimientos y experiencias en estas dos áreas fascinantes. Ya seas un entusiasta de la programación o alguien buscando mejorar su rutina de ejercicios, ¡este blog es para ti!
+                ¡Hola! Soy Abel, un apasionado de la tecnología y el fitness. He creado este espacio para compartir mis conocimientos y experiencias en estas dos áreas fascinantes. Si te encanta programar o estás buscando optimizar tu rutina de ejercicios, ¡este blog es para ti! Aquí encontrarás consejos, tutoriales y recomendaciones para llevar tu vida digital y física al siguiente nivel.
             </p>
         </div>
         <img class="h-[280px] w-full object-cover object-center lg:h-[380px] lg:w-[50%]" src="https://images.unsplash.com/photo-1557754897-ca12c5049d83?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
     </div>
     <div class="h-[1px] w-full bg-white"></div>
-    <div class="my-[30px] gap-[30px] flex flex-col">
+    <div class="my-[30px] gap-[20px] flex flex-col">
         <h3 class="inter-bold text-[32px] text-white">Artículos y publicaciones recientes</h3>
         <div class="relative flex items-center">
-            <button id="scrollLeft" class="z-10 bg-[var(--primary-color)] ml-[-30px] fa-solid fa-arrow-left absolute left-0 rounded-full px-4 py-2 text-white focus:outline-none active:opacity-75"></button>
+            <button id="scrollLeft" class="z-10 bg-[var(--primary-color)] fa-solid fa-arrow-left absolute left-0 rounded-full px-4 py-2 text-white focus:outline-none active:opacity-75"></button>
             <div class="no-scrollbar gap-[15px] flex flex-row items-center overflow-x-scroll">
                 @foreach(var item in Model)
                 {

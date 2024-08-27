@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BlogPersonal</title>
+    <title>@ViewData["Title"] - TecnoFit</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
-
+    <link rel="icon" href="https://img.icons8.com/fluency/48/laptop.png" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -36,13 +36,10 @@
                         <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Inicio"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Home">Inicio</a>
                     </li>
                     <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)] @ViewData["Publicaciones"]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
                     </li>
                     <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Contacto</a>
-                    </li>
-                    <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Sobre Mi</a>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)] @ViewData["Contacto"]" asp-action="Contact" asp-controller="Home">Contacto</a>
                     </li>
                     @if (User.IsInRole(Roles.Admin))
                     {
@@ -54,10 +51,10 @@
                 <div class="gap-[28px] hidden items-center lg:flex">
                     @if (!User.Identity.IsAuthenticated)
                     {
-                        <a class="border-2 inter-bold px-[20px] py-[12px] h-[48px] inter-bold rounded-[6px] flex items-center border-white text-white" asp-action="Login" asp-controller="Account">
+                        <a class="border-2 inter-bold px-[20px] py-[12px] h-[48px] inter-bold rounded-[6px] flex items-center border-white text-white transition-colors hover:text-black hover:bg-white hover:border-black" asp-action="Login" asp-controller="Account">
                             Iniciar sesión
                         </a>
-                        <a class="border-2 border-[var(--primary-color)] h-[48px ] bg-[var(--primary-color)] px-[20px] py-[12px] inter-bold rounded-[6px] flex items-center text-white" asp-action="Register" asp-controller="Account">
+                        <a class="border-2 border-[var(--primary-color)] h-[48px ] bg-[var(--primary-color)] px-[20px] py-[12px] inter-bold rounded-[6px] flex items-center text-white transition-colors hover:bg-[var(--secondary-color)]" asp-action="Register" asp-controller="Account">
                             Registrarse
                         </a>
                     }
@@ -83,13 +80,10 @@
                         <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] @ViewData["Inicio"] active:text-[var(--primary-color)]" asp-action="Index" asp-controller="Home">Inicio</a>
                     </li>
                     <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)] @ViewData["Publicaciones"]" asp-action="Posts" asp-controller="Home">Publicaciones</a>
                     </li>
                     <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Contacto</a>
-                    </li>
-                    <li>
-                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)]">Sobre Mi</a>
+                        <a class="p-[8px] inter-bold text-[var(--link-color)] transition-[.5s] hover:text-[var(--secondary-color)] active:text-[var(--primary-color)] @ViewData["Contacto"]" asp-action="Contact" asp-controller="Home">Contacto</a>
                     </li>
                     @if (User.IsInRole(Roles.Admin))
                     {
@@ -101,7 +95,7 @@
                 <div class="gap-[28px] flex w-full flex-row justify-center lg:hidden">
                     @if (!User.Identity.IsAuthenticated)
                     {
-                        <a class="border-2 inter-bold px-[15px] py-[6px] h-[38px] inter-bold rounded-[6px] flex items-center border-white text-white" asp-action="Login" asp-controller="Account">
+                        <a class="border-2 inter-bold px-[15px] py-[6px] h-[38px] inter-bold rounded-[6px] flex items-center border-white text-white transition-colors hover:text-black hover:bg-white hover:border-black" asp-action="Login" asp-controller="Account">
                             Iniciar sesión
                         </a>
                         <a class="border-2 border-[var(--primary-color)] h-[38px] bg-[var(--primary-color)] px-[15px] py-[6px] inter-bold rounded-[6px] flex items-center text-white" asp-action="Register" asp-controller="Account">
@@ -123,12 +117,26 @@
         @RenderBody()
     </main>
     <footer class="bg-[var(--secondary-body-color)] mt-auto w-full">
-        <div class="gap-[14px] py-[34px] px-[65px] flex w-full flex-row text-white">
-            <span>@@2024</span>
-            <a>GitHub</a>
-            <a>LinkedIn</a>
-            <a>Email</a>
-        </div>
+        <ul class="gap-[14px] py-[34px] px-[65px] flex flex-row items-center text-white">
+            <li class="pt-2">
+                @@2024
+            </li>
+            <li>
+                <a class="flex flex-col items-center text-center transition-colors hover:text-[var(--primary-color)]" href="https://github.com/AbelMV29" target="_blank">
+                    <span class="mt-2">GitHub</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex flex-col items-center text-center transition-colors hover:text-[var(--primary-color)]" target="_blank" href="https://www.linkedin.com/in/abel-montes-vega/">
+                    <span class="mt-2">LinkedIn</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex flex-col items-center text-center transition-colors hover:text-[var(--primary-color)]" href="mailto:mvabel23@gmail.com" target="_blank">
+                    <span class="mt-2">Email</span>
+                </a>
+            </li>
+        </ul>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

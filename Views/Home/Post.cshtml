@@ -5,12 +5,14 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="mx-[60px] my-[50px] gap-[30px] flex flex-col 2xl:mx-[300px]">
+<div class="my-[50px] gap-[30px] mx-4 flex flex-col lg:mx-[60px] 2xl:mx-[300px]">
     <div class="relative overflow-hidden py-4">
         <img class="blur-[4px] absolute inset-0 h-full w-full object-cover object-center" src="@Model.PreviewImage" />
         <div class="absolute inset-0 bg-gradient-to-b from-gray-950 to-gray-500 opacity-90"></div>
-        <div class="inter-bold relative flex flex-row items-center justify-between p-4">
-            <h1 class="text-[32px] text-[var(--primary-color)]">@Model.Title</h1>
+        <div class="inter-bold relative flex flex-row flex-wrap items-center justify-between p-4">
+            
+            <h1 class="text-[32px] text-[var(--primary-color)] hidden md:block">@Model.Title</h1>
+            <h2 class="text-[var(--primary-color)] block md:hidden">@Model.Title</h2>
             <span class="text-[18px] text-[var(--link-color)] flex-shrink-0">@Model.CategoryName - @Model.PublishDate</span>
         </div>
     </div>
@@ -27,8 +29,8 @@
             <form method="post" enctype="multipart/form-data" class="gap-[15px] flex flex-col" id="commentForm">
                 <input type="hidden" name="IdPost" value="@Model.Id" />
                 <textarea placeholder="Escribe un comentario" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full resize-none border-white text-gray-400" name="Body" rows="5"></textarea>
-                <div class="flex flex-row justify-between">
-                    <input accept="image/*" class="w-[50%] text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] border-white text-gray-400" type="file" name="MediaUrl" />
+                <div class="gap-[10px] flex flex-row flex-wrap justify-between">
+                    <input accept="image/*" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 md:w-[50%]" type="file" name="MediaUrl" />
                     <button class="text-[16px] bg-[var(--primary-color)] px-[35px] py-[6.5px] inter-bold transition-[1s] rounded-md text-white hover:bg-[var(--secondary-color)]" type="submit">Comentar</button>
                 </div>
             </form>
@@ -62,7 +64,7 @@
                         <p class="text-white">@item.Body</p>
                         @if (item.MediaUrl is not null)
                         {
-                            <img src="@item.MediaUrl" class="w-[50%] rounded-[6px]" />
+                            <img src="@item.MediaUrl" class="rounded-[6px]" />
                         }
                         <hr class="opacity-30" />
                     </div>
@@ -89,7 +91,7 @@
                         toastr.error("El archivo debe ser del tipo imagen");
                         return;
                     }
-
+                    toastr.info("Publicando comentario...")
                     const formData = new FormData(commentForm);
                     fetch("/comment", {
                         method: 'Post',

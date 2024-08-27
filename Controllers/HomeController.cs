@@ -4,6 +4,7 @@ using BlogPersonal.Mappper;
 using BlogPersonal.Models;
 using BlogPersonal.Models.User;
 using BlogPersonal.Models.View;
+using BlogPersonal.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,15 +22,18 @@ namespace BlogPersonal.Controllers
         private readonly IRepository<Comment> _repositoryComment;
         private readonly ICloudService _cloudService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IEmailSendService _emailSendService;
 
         public HomeController(ILogger<HomeController> logger,IRepository<Post> repositoryPost,
-            IRepository<Comment> repositoryComment,ICloudService cloudService,IMemoryCache memoryCache)
+            IRepository<Comment> repositoryComment,ICloudService cloudService,IMemoryCache memoryCache,
+            IEmailSendService emailSendService)
         {
             _logger = logger;
             _repositoryPost = repositoryPost;
             _repositoryComment = repositoryComment;
             _cloudService = cloudService;
             _memoryCache = memoryCache;
+            _emailSendService = emailSendService;
         }
 
         public IActionResult Index()
@@ -146,6 +150,36 @@ namespace BlogPersonal.Controllers
             return Ok();
         }
 
+        [HttpGet("contact")]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [HttpPost("contact"),ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contact(ContactViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if(!SendGridService.VerifyDomain(model.Email))
+            {
+                TempData["error"] = "Dominio incorrecto";
+                return View(model);
+            }
+
+            var result = await _emailSendService.SendEmailAsync(model);
+
+            if (!result)
+            {
+                TempData["error"] = "Error al enviar el formulario. Intente nuevamente";
+                return View(model);
+            }
+            TempData["success"] = "�Correo enviado con exito!";
+            return RedirectToAction("Contact");
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,0 +1,68 @@
+﻿@using BlogPersonal.Models.View
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Contacto"] = "active";
+    @model ContactViewModel
+}
+<div class="inter-bold mx-4 flex flex-row flex-wrap text-white lg:mx-[60px] 2xl:mx-[300px]">
+    <div class="gap-[15px] mb-8 flex w-full flex-col items-center">
+        <h1 class="text-[var(--primary-color)] mb-4 text-3xl font-bold lg:text-4xl">
+            Contáctame
+        </h1>
+        <p class="text-center text-lg text-white lg:text-xl">
+            ¿Tienes alguna pregunta o te gustaría colaborar conmigo?
+            <span class="text-[var(--primary-color)] font-semibold"> ¡Hablemos!</span>
+        </p>
+    </div>
+    <div class="gap-[20px] mb-8 flex w-full flex-col px-8 text-center lg:w-[50%] lg:mb-0">
+        <h2 class="mb-2 text-2xl font-semibold">Contacto Directo</h2>
+        <p class="mb-4 text-base lg:text-lg">Puedes comunicarte directamente a través de las siguientes plataformas:</p>
+        <ul class="gap-[30px] flex flex-row justify-center">
+            <li>
+                <a class="flex flex-col items-center text-center transition-colors hover:text-[var(--primary-color)]" href="https://github.com/AbelMV29" target="_blank">
+                    <i class="fa-brands fa-github"></i>
+                    <span class="mt-2">GitHub</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex flex-col items-center text-center transition-colors hover:text-[var(--primary-color)]" target="_blank" href="https://www.linkedin.com/in/abel-montes-vega/">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                    <span class="mt-2">LinkedIn</span>
+                </a>
+            </li>
+            <li>
+                <a class="flex flex-col items-center text-center transition-colors hover:text-[var(--primary-color)]" href="mailto:mvabel23@gmail.com" target="_blank">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span class="mt-2">Email</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+
+    <div class="gap-[20px] mb-3 flex w-full flex-col lg:w-[50%]">
+        <h2 class="mb-4 text-center text-2xl font-semibold">Formulario de Contacto</h2>
+        <form class="gap-[15px] flex flex-col items-start" asp-action="Contact" asp-controller="Home" method="post">
+            <input asp-for="Name" type="text" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Nombre" />
+            <input asp-for="Email" type="email" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Correo Electrónico" />
+            <input asp-for="Subject" type="text" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Asunto" />
+            <textarea asp-for="Message" class="text-[16px] px-[10px] py-[14px] border-2 bg-[var(--secondary-body-color)] rounded-[6px] w-full border-white text-gray-400 transition-colors focus:text-white focus:border-[var(--primary-color)] focus:outline-none" placeholder="Mensaje"></textarea>
+            <button id="enviarForm" type="submit" class="text-[16px] bg-[var(--primary-color)] px-[45px] py-[9.5px] transition-[1s] rounded-md font-bold text-white hover:bg-[var(--secondary-color)]">
+                Enviar
+            </button>
+        </form>
+    </div>
+</div>
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function()
+        {
+            $("#enviarForm").click(function () { 
+                toastr.info("Realizando envio...");
+            })
+        })
+    </script>
+}

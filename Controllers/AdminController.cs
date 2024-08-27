@@ -38,13 +38,24 @@ namespace BlogPersonal.Controllers
         }
 
         [HttpGet("user")]
-        public async Task<IActionResult> ListUser()
+        public async Task<IActionResult> ListUser(CancellationToken cancellationToken = default)
         {
-            var users = await _repositoryAppUser.GetAll().ToListAsync();
+            await Task.Delay(15000, cancellationToken);
+            string cacheKey = "listUser";
+            if (!_memoryCache.TryGetValue(cacheKey, out List<AppUser> users))
+            {
+                users = await _repositoryAppUser.GetAll().ToListAsync(cancellationToken);
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromHours(10));
+
+                _memoryCache.Set(cacheKey, users, cacheEntryOptions);
+            }
+            
             return View(users);
         }
 
-        [HttpGet("post"),ResponseCache(Duration =21600,Location =ResponseCacheLocation.Client)]
+        [HttpGet("post")]
         public async Task<IActionResult> ListPost()
         {
             var posts = await _repositoryPost.GetAll().OrderByDescending(p => p.PublishDate).ToListAsync();
@@ -122,6 +133,7 @@ namespace BlogPersonal.Controllers
             await _repositoryPost.DeleteAsync(postToDelete);
             await _repositoryPost.SaveChangesAsync();
             TempData["success"] = "Eliminación exitosa";
+            _memoryCache.Remove("indexHome");
             return RedirectToAction("ListPost");
         }
     }
