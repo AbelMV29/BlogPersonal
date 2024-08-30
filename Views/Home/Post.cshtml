@@ -64,7 +64,7 @@
                         <p class="text-white">@item.Body</p>
                         @if (item.MediaUrl is not null)
                         {
-                            <img src="@item.MediaUrl" class="rounded-[6px]" />
+                            <img src="@item.MediaUrl" class="rounded-[6px] h-max max-h-[500px] w-max" />
                         }
                         <hr class="opacity-30" />
                     </div>
@@ -141,7 +141,7 @@
                             if (item.mediaUrl) {
                                 const imgElement = document.createElement('img');
                                 imgElement.src = item.mediaUrl;
-                                imgElement.className = 'w-[50%] rounded-[6px]';
+                                imgElement.className = 'rounded-[6px] max-h-[500px] w-auto object-contain';
                                 commentDiv.appendChild(imgElement);
                             }
 

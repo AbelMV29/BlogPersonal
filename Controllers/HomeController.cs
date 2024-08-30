@@ -161,6 +161,7 @@ namespace BlogPersonal.Controllers
         {
             if (!ModelState.IsValid)
             {
+                TempData["error"] = "Complete todos los campos";
                 return View(model);
             }
 
